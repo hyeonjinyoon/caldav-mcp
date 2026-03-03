@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CalDAVClient, RecurrenceRule } from "ts-caldav";
 import { z } from "zod";
+import { createCalendarUrlSchema } from "../validation.js";
 
 type CreateEventInput = {
 	summary: string;
@@ -28,7 +29,11 @@ const recurrenceRuleSchema = z.object({
 	bymonth: z.array(z.number()).optional(),
 });
 
-export function registerCreateEvent(client: CalDAVClient, server: McpServer) {
+export function registerCreateEvent(
+	client: CalDAVClient,
+	server: McpServer,
+	baseUrl: string,
+) {
 	server.registerTool(
 		"create-event",
 		{
@@ -37,7 +42,7 @@ export function registerCreateEvent(client: CalDAVClient, server: McpServer) {
 				summary: z.string(),
 				start: z.string().datetime(),
 				end: z.string().datetime(),
-				calendarUrl: z.string(),
+				calendarUrl: createCalendarUrlSchema(baseUrl),
 				recurrenceRule: recurrenceRuleSchema.optional(),
 			},
 		},

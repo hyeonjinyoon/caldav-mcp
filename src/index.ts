@@ -15,27 +15,52 @@ const server = new McpServer({
 });
 
 async function main() {
+	const baseUrl = process.env.CALDAV_BASE_URL;
+	const username = process.env.CALDAV_USERNAME;
+	const password = process.env.CALDAV_PASSWORD;
+
+	if (!baseUrl || !username || !password) {
+		const missing = [
+			!baseUrl && "CALDAV_BASE_URL",
+			!username && "CALDAV_USERNAME",
+			!password && "CALDAV_PASSWORD",
+		].filter(Boolean);
+		console.error(
+			`Missing required environment variables: ${missing.join(", ")}`,
+		);
+		process.exit(1);
+	}
+
+	if (!baseUrl.startsWith("https://")) {
+		console.error(
+			"CALDAV_BASE_URL must use HTTPS to protect credentials in transit",
+		);
+		process.exit(1);
+	}
+
 	const client = await CalDAVClient.create({
-		baseUrl: process.env.CALDAV_BASE_URL || "",
+		baseUrl,
 		auth: {
 			type: "basic",
-			username: process.env.CALDAV_USERNAME || "",
-			password: process.env.CALDAV_PASSWORD || "",
+			username,
+			password,
 		},
 	});
 
 	// Test connection on startup
 	try {
 		await client.getCalendars();
-	} catch (error) {
-		console.error("❌ Failed to connect to CalDAV server:", error);
+	} catch {
+		console.error(
+			"Failed to connect to CalDAV server. Please check your credentials and server URL.",
+		);
 		process.exit(1);
 	}
 
-	registerCreateEvent(client, server);
-	registerListEvents(client, server);
-	registerDeleteEvent(client, server);
-	await registerListCalendars(client, server);
+	registerCreateEvent(client, server, baseUrl);
+	registerListEvents(client, server, baseUrl);
+	registerDeleteEvent(client, server, baseUrl);
+	registerListCalendars(client, server);
 
 	// Start receiving messages on stdin and sending messages on stdout
 	const transport = new StdioServerTransport();

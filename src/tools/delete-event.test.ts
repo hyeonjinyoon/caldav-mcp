@@ -31,18 +31,22 @@ describe("registerDeleteEvent", () => {
 			},
 		) as typeof server.registerTool;
 
-		registerDeleteEvent(mockClient as CalDAVClient, server);
+		registerDeleteEvent(
+			mockClient as CalDAVClient,
+			server,
+			"https://example.com/dav",
+		);
 
 		expect(toolHandler).toBeDefined();
 
 		const result = await toolHandler({
-			calendarUrl: "/f/test-calendar/",
+			calendarUrl: "https://example.com/f/test-calendar/",
 			uid: "event-123",
 		});
 
 		expect(result.content[0].text).toBe("Event deleted");
 		expect(mockClient.deleteEvent).toHaveBeenCalledWith(
-			"/f/test-calendar/",
+			"https://example.com/f/test-calendar/",
 			"event-123",
 		);
 	});
@@ -70,18 +74,22 @@ describe("registerDeleteEvent", () => {
 			},
 		) as typeof server.registerTool;
 
-		registerDeleteEvent(mockClient as CalDAVClient, server);
+		registerDeleteEvent(
+			mockClient as CalDAVClient,
+			server,
+			"https://example.com/dav",
+		);
 
 		expect(toolHandler).toBeDefined();
 
 		const result = await toolHandler({
-			calendarUrl: "/f/test-calendar/",
+			calendarUrl: "https://example.com/f/test-calendar/",
 			uid: "event-456",
 		});
 
 		expect(result.content[0].text).toBe("Event deleted");
 		expect(mockClient.deleteEvent).toHaveBeenCalledWith(
-			"/f/test-calendar/",
+			"https://example.com/f/test-calendar/",
 			"event-456",
 		);
 	});

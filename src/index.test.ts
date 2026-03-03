@@ -73,7 +73,9 @@ describe("MCP Server Console Output", () => {
 		vi.mocked(deleteEvent.registerDeleteEvent).mockImplementation(
 			() => undefined,
 		);
-		vi.mocked(listCalendars.registerListCalendars).mockResolvedValue(undefined);
+		vi.mocked(listCalendars.registerListCalendars).mockImplementation(
+		() => undefined,
+	);
 		vi.mocked(listEvents.registerListEvents).mockImplementation(
 			() => undefined,
 		);

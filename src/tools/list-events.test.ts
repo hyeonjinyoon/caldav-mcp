@@ -48,14 +48,18 @@ describe("registerListEvents", () => {
 		) as typeof server.registerTool;
 
 		// Register the tool
-		registerListEvents(mockClient as CalDAVClient, server);
+		registerListEvents(
+			mockClient as CalDAVClient,
+			server,
+			"https://example.com/dav",
+		);
 
 		// Verify handler was captured
 		expect(toolHandler).toBeDefined();
 
 		// Call the tool handler
 		const result = await toolHandler({
-			calendarUrl: "/test/calendar/",
+			calendarUrl: "https://example.com/test/calendar/",
 			start: "2025-10-01T00:00:00Z",
 			end: "2025-10-31T23:59:59Z",
 		});

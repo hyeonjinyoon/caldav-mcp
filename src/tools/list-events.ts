@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import type { CalDAVClient } from "ts-caldav";
 import { z } from "zod";
+import { createCalendarUrlSchema } from "../validation.js";
 
 type ListEventsInput = {
 	start: string;
@@ -12,7 +13,11 @@ const dateString = z.string().refine((val) => !Number.isNaN(Date.parse(val)), {
 	message: "Invalid date string",
 });
 
-export function registerListEvents(client: CalDAVClient, server: McpServer) {
+export function registerListEvents(
+	client: CalDAVClient,
+	server: McpServer,
+	baseUrl: string,
+) {
 	server.registerTool(
 		"list-events",
 		{
@@ -21,7 +26,7 @@ export function registerListEvents(client: CalDAVClient, server: McpServer) {
 			inputSchema: {
 				start: dateString,
 				end: dateString,
-				calendarUrl: z.string(),
+				calendarUrl: createCalendarUrlSchema(baseUrl),
 			},
 		},
 		async (args: ListEventsInput) => {
