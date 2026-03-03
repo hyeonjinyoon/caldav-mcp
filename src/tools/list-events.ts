@@ -41,6 +41,11 @@ export function registerListEvents(
 				summary: e.summary,
 				start: e.start,
 				end: e.end,
+				description: e.description,
+				location: e.location,
+				etag: e.etag,
+				href: e.href,
+				recurrenceRule: e.recurrenceRule,
 			}));
 			return {
 				content: [{ type: "text", text: JSON.stringify(data) }],

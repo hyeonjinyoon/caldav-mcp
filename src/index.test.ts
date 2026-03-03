@@ -4,6 +4,7 @@ import { beforeAll, describe, expect, test, vi } from "vitest";
 vi.mock("ts-caldav");
 vi.mock("@modelcontextprotocol/sdk/server/mcp.js");
 vi.mock("@modelcontextprotocol/sdk/server/stdio.js");
+vi.mock("./caldav-http.js");
 vi.mock("./tools/create-event.js");
 vi.mock("./tools/delete-event.js");
 vi.mock("./tools/list-calendars.js");
@@ -59,6 +60,12 @@ describe("MCP Server Console Output", () => {
 		);
 		vi.mocked(StdioServerTransport).mockImplementation(
 			() => ({}) as unknown as InstanceType<typeof StdioServerTransport>,
+		);
+
+		// Mock CalDAVHttp
+		const caldavHttpModule = await import("./caldav-http.js");
+		vi.mocked(caldavHttpModule.CalDAVHttp).mockImplementation(
+			() => ({}) as unknown as InstanceType<typeof caldavHttpModule.CalDAVHttp>,
 		);
 
 		// Mock tool registration functions

@@ -4,6 +4,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { CalDAVClient } from "ts-caldav";
 
+import { CalDAVHttp } from "./caldav-http.js";
 import { registerCreateEvent } from "./tools/create-event.js";
 import { registerDeleteEvent } from "./tools/delete-event.js";
 import { registerListCalendars } from "./tools/list-calendars.js";
@@ -57,9 +58,11 @@ async function main() {
 		process.exit(1);
 	}
 
+	const caldavHttp = new CalDAVHttp({ baseUrl, username, password });
+
 	registerCreateEvent(client, server, baseUrl);
 	registerListEvents(client, server, baseUrl);
-	registerDeleteEvent(client, server, baseUrl);
+	registerDeleteEvent(client, server, baseUrl, caldavHttp);
 	registerListCalendars(client, server);
 
 	// Start receiving messages on stdin and sending messages on stdout

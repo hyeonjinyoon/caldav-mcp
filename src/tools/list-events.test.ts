@@ -19,12 +19,19 @@ describe("registerListEvents", () => {
 					summary: "Test Event",
 					start: new Date("2025-10-13T10:00:00Z"),
 					end: new Date("2025-10-13T11:00:00Z"),
+					description: "A test event",
+					location: "Room A",
+					etag: '"etag-1"',
+					href: "/dav/cal/event-123.ics",
+					recurrenceRule: { freq: "DAILY" },
 				},
 				{
 					uid: "event-456",
 					summary: "Another Event",
 					start: new Date("2025-10-14T14:00:00Z"),
 					end: new Date("2025-10-14T15:00:00Z"),
+					etag: '"etag-2"',
+					href: "/dav/cal/event-456.ics",
 				},
 			]),
 		};
@@ -71,7 +78,14 @@ describe("registerListEvents", () => {
 		expect(events).toHaveLength(2);
 		expect(events[0]).toHaveProperty("uid", "event-123");
 		expect(events[0]).toHaveProperty("summary", "Test Event");
+		expect(events[0]).toHaveProperty("description", "A test event");
+		expect(events[0]).toHaveProperty("location", "Room A");
+		expect(events[0]).toHaveProperty("etag", '"etag-1"');
+		expect(events[0]).toHaveProperty("href", "/dav/cal/event-123.ics");
+		expect(events[0]).toHaveProperty("recurrenceRule");
+		expect(events[0].recurrenceRule).toEqual({ freq: "DAILY" });
 		expect(events[1]).toHaveProperty("uid", "event-456");
 		expect(events[1]).toHaveProperty("summary", "Another Event");
+		expect(events[1]).toHaveProperty("etag", '"etag-2"');
 	});
 });
